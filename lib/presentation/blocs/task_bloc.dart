@@ -37,7 +37,12 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   Future<void> _onAddTask(AddTaskEvent event, Emitter<TaskState> emit) async {
     try {
       await addTask(event.task);
-      add(LoadTasksEvent()); // Reload lists after adding
+      if (state is TaskLoaded) {
+        final currentTasks = (state as TaskLoaded).tasks;
+        emit(TaskLoaded(tasks: [...currentTasks, event.task]));
+      } else {
+        add(LoadTasksEvent());
+      }
     } catch (e) {
       emit(TaskError(e.toString()));
     }
@@ -47,7 +52,16 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     try {
       final updatedTask = event.task.copyWith(isCompleted: !event.task.isCompleted);
       await updateTask(updatedTask);
-      add(LoadTasksEvent());
+      
+      if (state is TaskLoaded) {
+        final currentTasks = (state as TaskLoaded).tasks;
+        final updatedTasks = currentTasks.map(
+          (t) => t.id == updatedTask.id ? updatedTask : t
+        ).toList();
+        emit(TaskLoaded(tasks: updatedTasks));
+      } else {
+        add(LoadTasksEvent());
+      }
     } catch (e) {
       emit(TaskError(e.toString()));
     }
@@ -56,7 +70,13 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   Future<void> _onDeleteTask(DeleteTaskEvent event, Emitter<TaskState> emit) async {
     try {
       await deleteTask(event.id);
-      add(LoadTasksEvent());
+      if (state is TaskLoaded) {
+        final currentTasks = (state as TaskLoaded).tasks;
+        final updatedTasks = currentTasks.where((t) => t.id != event.id).toList();
+        emit(TaskLoaded(tasks: updatedTasks));
+      } else {
+        add(LoadTasksEvent());
+      }
     } catch (e) {
       emit(TaskError(e.toString()));
     }
