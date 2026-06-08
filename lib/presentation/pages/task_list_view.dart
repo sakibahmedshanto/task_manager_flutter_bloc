@@ -83,7 +83,9 @@ class _TaskListViewState extends State<TaskListView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(AppStrings.appName),
+        title: const Text(AppStrings.appName, style: TextStyle(fontWeight: FontWeight.bold)),
+        centerTitle: true,
+        elevation: 0,
       ),
       body: BlocBuilder<TaskBloc, TaskState>(
         builder: (context, state) {
@@ -96,32 +98,42 @@ class _TaskListViewState extends State<TaskListView> {
               return const Center(child: Text(AppStrings.noTasks));
             }
             return ListView.builder(
+              padding: const EdgeInsets.only(top: 8.0, bottom: 80.0),
               itemCount: state.tasks.length,
               itemBuilder: (context, index) {
                 final task = state.tasks[index];
-                return ListTile(
-                  title: Text(
-                    task.title,
-                    style: TextStyle(
-                      decoration: task.isCompleted
-                          ? TextDecoration.lineThrough
-                          : null,
+                return Card(
+                  margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  child: ListTile(
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+                    title: Text(
+                      task.title,
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: task.isCompleted ? Colors.grey : Colors.black87,
+                        decoration: task.isCompleted
+                            ? TextDecoration.lineThrough
+                            : null,
+                      ),
                     ),
-                  ),
-                  subtitle: task.description != null && task.description!.isNotEmpty
-                      ? Text(task.description!)
-                      : null,
-                  leading: Checkbox(
-                    value: task.isCompleted,
-                    onChanged: (_) {
-                      context.read<TaskBloc>().add(ToggleTaskEvent(task));
-                    },
-                  ),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () {
-                      context.read<TaskBloc>().add(DeleteTaskEvent(task.id));
-                    },
+                    subtitle: task.description != null && task.description!.isNotEmpty
+                        ? Text(task.description!)
+                        : null,
+                    leading: Checkbox(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                      value: task.isCompleted,
+                      onChanged: (_) {
+                        context.read<TaskBloc>().add(ToggleTaskEvent(task));
+                      },
+                    ),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete_outline, color: Colors.redAccent),
+                      onPressed: () {
+                        context.read<TaskBloc>().add(DeleteTaskEvent(task.id));
+                      },
+                    ),
                   ),
                 );
               },
