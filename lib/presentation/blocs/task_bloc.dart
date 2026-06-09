@@ -1,4 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../core/errors/failures.dart';
+import '../../domain/entities/task.dart';
 import '../../domain/usecases/add_task.dart';
 import '../../domain/usecases/delete_task.dart';
 import '../../domain/usecases/get_tasks.dart';
@@ -24,61 +27,74 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     on<DeleteTaskEvent>(_onDeleteTask);
   }
 
-  Future<void> _onLoadTasks(LoadTasksEvent event, Emitter<TaskState> emit) async {
+  Future<void> _onLoadTasks(
+    LoadTasksEvent event,
+    Emitter<TaskState> emit,
+  ) async {
     emit(TaskLoading());
     try {
       final tasks = await getTasks();
       emit(TaskLoaded(tasks: tasks));
-    } catch (e) {
-      emit(TaskError(e.toString()));
+    } on AppFailure catch (e) {
+      emit(TaskError(e.message));
+    } catch (_) {
+      emit(const TaskError('Something went wrong. Please try again.'));
     }
   }
 
-  Future<void> _onAddTask(AddTaskEvent event, Emitter<TaskState> emit) async {
+  Future<void> _onAddTask(
+    AddTaskEvent event,
+    Emitter<TaskState> emit,
+  ) async {
     try {
-      await addTask(event.task);
-      if (state is TaskLoaded) {
-        final currentTasks = (state as TaskLoaded).tasks;
-        emit(TaskLoaded(tasks: [...currentTasks, event.task]));
-      } else {
-        add(LoadTasksEvent());
-      }
-    } catch (e) {
-      emit(TaskError(e.toString()));
+      await addTask(Task(id: '', title: event.title, description: event.description));
+      final tasks = await getTasks();
+      emit(TaskLoaded(tasks: tasks));
+    } on AppFailure catch (e) {
+      emit(TaskError(e.message));
+    } catch (_) {
+      emit(const TaskError('Failed to add task. Please try again.'));
     }
   }
 
-  Future<void> _onToggleTask(ToggleTaskEvent event, Emitter<TaskState> emit) async {
+  Future<void> _onToggleTask(
+    ToggleTaskEvent event,
+    Emitter<TaskState> emit,
+  ) async {
     try {
-      final updatedTask = event.task.copyWith(isCompleted: !event.task.isCompleted);
-      await updateTask(updatedTask);
-      
+      final updated = event.task.copyWith(isCompleted: !event.task.isCompleted);
+      await updateTask(updated);
+
       if (state is TaskLoaded) {
-        final currentTasks = (state as TaskLoaded).tasks;
-        final updatedTasks = currentTasks.map(
-          (t) => t.id == updatedTask.id ? updatedTask : t
-        ).toList();
-        emit(TaskLoaded(tasks: updatedTasks));
-      } else {
-        add(LoadTasksEvent());
+        final updatedList = (state as TaskLoaded)
+            .tasks
+            .map((t) => t.id == updated.id ? updated : t)
+            .toList();
+        emit(TaskLoaded(tasks: updatedList));
       }
-    } catch (e) {
-      emit(TaskError(e.toString()));
+    } on AppFailure catch (e) {
+      emit(TaskError(e.message));
+    } catch (_) {
+      emit(const TaskError('Failed to update task. Please try again.'));
     }
   }
 
-  Future<void> _onDeleteTask(DeleteTaskEvent event, Emitter<TaskState> emit) async {
+  Future<void> _onDeleteTask(
+    DeleteTaskEvent event,
+    Emitter<TaskState> emit,
+  ) async {
     try {
       await deleteTask(event.id);
+
       if (state is TaskLoaded) {
-        final currentTasks = (state as TaskLoaded).tasks;
-        final updatedTasks = currentTasks.where((t) => t.id != event.id).toList();
-        emit(TaskLoaded(tasks: updatedTasks));
-      } else {
-        add(LoadTasksEvent());
+        final updatedList =
+            (state as TaskLoaded).tasks.where((t) => t.id != event.id).toList();
+        emit(TaskLoaded(tasks: updatedList));
       }
-    } catch (e) {
-      emit(TaskError(e.toString()));
+    } on AppFailure catch (e) {
+      emit(TaskError(e.message));
+    } catch (_) {
+      emit(const TaskError('Failed to delete task. Please try again.'));
     }
   }
 }

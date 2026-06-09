@@ -1,3 +1,8 @@
+import 'dart:io';
+
+import 'package:uuid/uuid.dart';
+
+import '../../core/errors/failures.dart';
 import '../../domain/entities/task.dart';
 import '../../domain/repositories/task_repository.dart';
 import '../datasources/task_local_data_source.dart';
@@ -7,36 +12,41 @@ import '../models/task_model.dart';
 class TaskRepositoryImpl implements TaskRepository {
   final TaskLocalDataSource localDataSource;
   final TaskRemoteDataSource remoteDataSource;
+  final Uuid uuid;
 
   TaskRepositoryImpl({
     required this.localDataSource,
     required this.remoteDataSource,
+    required this.uuid,
   });
 
   @override
   Future<List<Task>> getTasks() async {
     try {
       final localTasks = await localDataSource.getTasks();
-      
-      // If local storage has tasks, just return them
       if (localTasks.isNotEmpty) {
-        return localTasks;
+        return localTasks.map((m) => m.toEntity()).toList();
       }
-
-      // First time launch: local is empty, so fetch seed data
-      final remoteTasks = await remoteDataSource.getSeedTasks();
-      await localDataSource.cacheTasks(remoteTasks);
-      return remoteTasks;
-    } catch (e) {
-      // If the API fails, still return whatever we have locally (empty or not)
-      // and re-throw so the UI can show a meaningful error message
-      throw Exception('Failed to load tasks: $e');
+      try {
+        final remoteTasks = await remoteDataSource.getSeedTasks();
+        await localDataSource.cacheTasks(remoteTasks);
+        return remoteTasks.map((m) => m.toEntity()).toList();
+      } on SocketException {
+        throw const NetworkFailure();
+      } catch (_) {
+        throw const ServerFailure();
+      }
+    } on AppFailure {
+      rethrow;
+    } catch (_) {
+      throw const CacheFailure();
     }
   }
 
   @override
   Future<void> addTask(Task task) async {
-    await localDataSource.addTask(TaskModel.fromEntity(task));
+    final model = TaskModel.fromEntity(task.copyWith(id: uuid.v4()));
+    await localDataSource.addTask(model);
   }
 
   @override

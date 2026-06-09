@@ -23,7 +23,6 @@ class TaskRemoteDataSourceImpl implements TaskRemoteDataSource {
       final uuid = const Uuid();
       return jsonList.map((json) {
         final model = TaskModel.fromJson(json);
-        // We override the ID with a UUID so it matches our local UUID generation format
         return TaskModel(
           id: uuid.v4(),
           title: model.title,

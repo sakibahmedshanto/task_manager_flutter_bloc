@@ -1,30 +1,41 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:task_manager_flutter_bloc/main.dart';
+import 'package:task_manager_flutter_bloc/domain/entities/task.dart';
+import 'package:task_manager_flutter_bloc/presentation/blocs/task_state.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  group('Task entity', () {
+    const task = Task(id: '1', title: 'Buy groceries');
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    test('copyWith updates only the specified fields', () {
+      final updated = task.copyWith(isCompleted: true);
+      expect(updated.id, '1');
+      expect(updated.title, 'Buy groceries');
+      expect(updated.isCompleted, isTrue);
+    });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    test('two tasks with identical fields are equal', () {
+      expect(const Task(id: '1', title: 'Buy groceries'), equals(task));
+    });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    test('tasks with different ids are not equal', () {
+      expect(const Task(id: '2', title: 'Buy groceries'), isNot(equals(task)));
+    });
+  });
+
+  group('TaskState', () {
+    test('TaskLoaded instances with the same list are equal', () {
+      const tasks = [Task(id: '1', title: 'Task A')];
+      expect(
+        const TaskLoaded(tasks: tasks),
+        equals(const TaskLoaded(tasks: tasks)),
+      );
+    });
+
+    test('TaskError instances with the same message are equal', () {
+      expect(
+        const TaskError('Network error'),
+        equals(const TaskError('Network error')),
+      );
+    });
   });
 }

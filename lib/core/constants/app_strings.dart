@@ -9,4 +9,5 @@ class AppStrings {
   static const String errorLoadingTasks = 'Failed to load tasks. Please try again.';
   static const String noTasks = 'No tasks found. Add a new one!';
   static const String titleRequired = 'Title is required';
+  static const String retry = 'Retry';
 }

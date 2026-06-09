@@ -24,7 +24,7 @@ A simple cross-platform Flutter application built as a technical assessment. It 
    ```
 4. **Generate Code** (Hive type adapters):
    ```bash
-   flutter pub run build_runner build --delete-conflicting-outputs
+   dart run build_runner build --delete-conflicting-outputs
    ```
 5. **Run the App:**
    - Run on an attached device or emulator:

@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
+import 'package:uuid/uuid.dart';
 
 import 'data/datasources/task_local_data_source.dart';
 import 'data/datasources/task_remote_data_source.dart';
@@ -37,6 +38,7 @@ Future<void> init() async {
     () => TaskRepositoryImpl(
       localDataSource: sl(),
       remoteDataSource: sl(),
+      uuid: sl(),
     ),
   );
 
@@ -53,4 +55,5 @@ Future<void> init() async {
   final taskBox = await Hive.openBox<TaskModel>('tasks');
   sl.registerLazySingleton(() => taskBox);
   sl.registerLazySingleton(() => http.Client());
+  sl.registerLazySingleton(() => const Uuid());
 }
