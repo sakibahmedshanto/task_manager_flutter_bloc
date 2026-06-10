@@ -16,20 +16,13 @@ A simple cross-platform Flutter application built as a technical assessment. It 
 
 ## Screenshots
 
-### First Launch & Core Features
-| API Seed Data (First Launch) | Adding a New Task | Tasks Added |
+| App on Device Drawer | API Seed Data (First Launch) | Adding a New Task |
 |---|---|---|
-| ![API Fetched Tasks](screenshots/api%20fetched%20tasks.png) | ![Adding a New Task](screenshots/adding%20a%20new%20task.png) | ![New Tasks Added](screenshots/new%20tasks%20added.png) |
+| ![App on Drawer](screenshots/app%20on%20appdrawer.png) | ![API Fetched Tasks](screenshots/api%20fetched%20tasks.png) | ![Adding a New Task](screenshots/adding%20a%20new%20task.png) |
 
-### Task States & Error Handling
-| Tasks Marked Complete | Empty State | Network Error |
-|---|---|---|
-| ![Tasks Marked](screenshots/new%20tasks%20marked.png) | ![No Tasks](screenshots/no%20taskts.png) | ![Network Error](screenshots/network%20error.png) |
-
-### App Launcher
-| App on Device Drawer |
-|---|
-| ![App on Drawer](screenshots/app%20on%20appdrawer.png) |
+| Tasks Added | Tasks Marked Complete | Empty State | Network Error |
+|---|---|---|---|
+| ![New Tasks Added](screenshots/new%20tasks%20added.png) | ![Tasks Marked](screenshots/new%20tasks%20marked.png) | ![No Tasks](screenshots/no%20taskts.png) | ![Network Error](screenshots/network%20error.png) |
 
 ## How to Run the App
 
