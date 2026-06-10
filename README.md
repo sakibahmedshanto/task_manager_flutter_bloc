@@ -31,7 +31,7 @@ A simple cross-platform Flutter application built as a technical assessment. It 
 1. **Prerequisites:** Ensure you have the [Flutter SDK](https://flutter.dev/docs/get-started/install) installed (latest stable version).
 2. **Clone the repository:**
    ```bash
-   git clone <YOUR-REPOSITORY-URL>
+   git clone https://github.com/sakibahmedshanto/task_manager_flutter_bloc
    cd task_manager_flutter_bloc
    ```
 3. **Install dependencies:**
