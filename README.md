@@ -10,6 +10,27 @@ A simple cross-platform Flutter application built as a technical assessment. It 
 - Fetches initial seed data (5 items) from [JSONPlaceholder](https://jsonplaceholder.typicode.com/todos).
 - State persists locally across app restarts.
 
+## Demo
+
+![App Demo](screenshots/demo.gif)
+
+## Screenshots
+
+### First Launch & Core Features
+| API Seed Data (First Launch) | Adding a New Task | Tasks Added |
+|---|---|---|
+| ![API Fetched Tasks](screenshots/api%20fetched%20tasks.png) | ![Adding a New Task](screenshots/adding%20a%20new%20task.png) | ![New Tasks Added](screenshots/new%20tasks%20added.png) |
+
+### Task States & Error Handling
+| Tasks Marked Complete | Empty State | Network Error |
+|---|---|---|
+| ![Tasks Marked](screenshots/new%20tasks%20marked.png) | ![No Tasks](screenshots/no%20taskts.png) | ![Network Error](screenshots/network%20error.png) |
+
+### App Launcher
+| App on Device Drawer |
+|---|
+| ![App on Drawer](screenshots/app%20on%20appdrawer.png) |
+
 ## How to Run the App
 
 1. **Prerequisites:** Ensure you have the [Flutter SDK](https://flutter.dev/docs/get-started/install) installed (latest stable version).
