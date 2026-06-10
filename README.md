@@ -12,7 +12,9 @@ A simple cross-platform Flutter application built as a technical assessment. It 
 
 ## Demo
 
-![App Demo](screenshots/demo.gif)
+| App Demo |
+|---|
+| <img src="screenshots/demo.gif" width="260"/> |
 
 ## Screenshots
 
